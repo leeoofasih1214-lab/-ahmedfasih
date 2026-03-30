@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإعدادات - نظام متابعة الإنذارات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <a href="index.html" class="sidebar-brand">نظام الإنذارات</a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i data-lucide="layout-dashboard"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="employees.html" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>الموظفين</span>
+            </a>
+            <a href="warnings.html" class="nav-item">
+                <i data-lucide="file-text"></i>
+                <span>سجل الإنذارات</span>
+            </a>
+            <a href="add-warning.html" class="nav-item">
+                <i data-lucide="plus-circle"></i>
+                <span>إضافة إنذار</span>
+            </a>
+            <a href="add-employee.html" class="nav-item">
+                <i data-lucide="user-plus"></i>
+                <span>إضافة موظف</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="settings.html" class="nav-item active">
+                <i data-lucide="settings"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="login.html" class="nav-item" style="color: var(--red); margin-top: auto;">
+                <i data-lucide="log-out"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar animate-fade">
+            <div class="page-title">
+                <h1>الإعدادات</h1>
+                <p>إدارة إعدادات النظام وكلمة المرور</p>
+            </div>
+        </header>
+
+        <!-- Account Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h3>إعدادات الحساب</h3>
+            </div>
+            <div class="card-body">
+                <form id="account-form" class="form-group">
+                    <div class="form-group">
+                        <label for="current-password">كلمة المرور الحالية</label>
+                        <input type="password" id="current-password" name="currentPassword" class="form-control" placeholder="أدخل كلمة المرور الحالية" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">كلمة المرور الجديدة</label>
+                        <input type="password" id="new-password" name="newPassword" class="form-control" placeholder="أدخل كلمة المرور الجديدة" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">تأكيد كلمة المرور</label>
+                        <input type="password" id="confirm-password" name="confirmPassword" class="form-control" placeholder="أعد كتابة كلمة المرور الجديدة" required>
+                    </div>
+                    <button type="submit" class="btn-modern btn-primary">
+                        <i data-lucide="save"></i>
+                        حفظ التغييرات
+                    </button>
+                </form>
+                <div id="password-message" class="error-message" style="display: none; margin-top: 1rem;"></div>
+            </div>
+        </div>
+
+        <!-- System Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h3>إعدادات النظام</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="max-warnings">الحد الأقصى للإنذارات (قبل الفصل)</label>
+                    <input type="number" id="max-warnings" class="form-control" placeholder="أدخل الحد الأقصى" min="1" max="20" value="5">
+                </div>
+                <div class="form-group">
+                    <label for="warning-reset-days">إعادة تعيين الإنذارات بعد (أيام)</label>
+                    <input type="number" id="warning-reset-days" class="form-control" placeholder="أدخل عدد الأيام" min="30" max="365" value="90">
+                </div>
+                <button type="button" onclick="saveSystemSettings()" class="btn-modern btn-primary">
+                    <i data-lucide="save"></i>
+                    حفظ الإعدادات
+                </button>
+                <div id="system-message" style="display: none; margin-top: 1rem;"></div>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="card">
+            <div class="card-header">
+                <h3>إدارة البيانات</h3>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button type="button" onclick="exportAllData()" class="btn-modern btn-primary">
+                        <i data-lucide="download"></i>
+                        تصدير جميع البيانات
+                    </button>
+                    <button type="button" onclick="importData()" class="btn-modern btn-secondary">
+                        <i data-lucide="upload"></i>
+                        استيراد البيانات
+                    </button>
+                    <button type="button" onclick="resetAllData()" class="btn-modern" style="background: rgba(239, 68, 68, 0.1); color: var(--red);">
+                        <i data-lucide="trash-2"></i>
+                        حذف جميع البيانات
+                    </button>
+                </div>
+                <input type="file" id="import-file" style="display: none;" accept=".json">
+            </div>
+        </div>
+
+        <!-- System Info -->
+        <div class="card">
+            <div class="card-header">
+                <h3>معلومات النظام</h3>
+            </div>
+            <div class="card-body">
+                <div class="employee-info-grid">
+                    <div class="info-item">
+                        <label>الإصدار</label>
+                        <p>1.0.0</p>
+                    </div>
+                    <div class="info-item">
+                        <label>تاريخ آخر تحديث</label>
+                        <p id="last-update">---</p>
+                    </div>
+                    <div class="info-item">
+                        <label>استخدام المساحة</label>
+                        <p id="storage-usage">جاري الحساب...</p>
+                    </div>
+                    <div class="info-item">
+                        <label>حالة النظام</label>
+                        <p style="color: #10b981; font-weight: 700;">✓ يعمل بشكل طبيعي</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+        renderSettings();
+    </script>
+</body>
+</html>

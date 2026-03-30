@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة موظف جديد - نظام متابعة الإنذارات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <a href="index.html" class="sidebar-brand">نظام الإنذارات</a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i data-lucide="layout-dashboard"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="employees.html" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>الموظفين</span>
+            </a>
+            <a href="warnings.html" class="nav-item">
+                <i data-lucide="file-text"></i>
+                <span>سجل الإنذارات</span>
+            </a>
+            <a href="add-warning.html" class="nav-item">
+                <i data-lucide="plus-circle"></i>
+                <span>إضافة إنذار</span>
+            </a>
+            <a href="add-employee.html" class="nav-item active">
+                <i data-lucide="user-plus"></i>
+                <span>إضافة موظف</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="login.html" class="nav-item" style="color: var(--red); margin-top: auto;">
+                <i data-lucide="log-out"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar animate-fade">
+            <div class="page-title">
+                <h1>إضافة موظف جديد</h1>
+                <p>قم بإدخال بيانات الموظف الجديد في النموذج أدناه</p>
+            </div>
+            <div class="top-actions">
+
+                <button class="btn-modern btn-primary" onclick="window.location.href='add-warning.html'">
+                    <i data-lucide="plus"></i>
+                    إضافة إنذار جديد
+                </button>
+                
+                <button class="btn-modern btn-secondary" onclick="window.location.href='add-employee.html'">
+                    <i data-lucide="user-plus"></i>
+                    إضافة موظف
+                </button>
+                
+                <!-- زر الوضع الليلي -->
+                <button class="btn-modern btn-secondary" onclick="toggleDarkMode()">
+                    🌙 الوضع الليلي
+                </button>
+                
+                </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="form-container">
+            <!-- Form Card -->
+            <div class="card form-card animate-fade">
+                <div class="card-header">
+                    <h3>
+                        <i data-lucide="user-plus" style="width: 20px; height: 20px;"></i>
+                        نموذج إضافة موظف
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form id="add-employee-form" class="enhanced-form">
+                        <!-- Employee ID Field -->
+                        <div class="form-group">
+                            <label for="employeeId">
+                                <i data-lucide="hash"></i>
+                                رقم الموظف
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input 
+                                    type="text"
+                                    id="employeeId"
+                                    name="employeeId"
+                                    class="form-control"
+                                    placeholder="مثال: 1025"
+                                    required
+                                >
+                                <span class="input-hint">
+                                    يستخدمه الموظف لتسجيل الدخول
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Name Field -->
+                        <div class="form-group">
+                            <label for="name">
+                                <i data-lucide="edit-3"></i>
+                                اسم الموظف
+                                <span class="required">*</span>
+                            </label>
+                        
+                            <div class="input-wrapper">
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    name="name" 
+                                    class="form-control" 
+                                    placeholder="مثال: أحمد محمد علي"
+                                    minlength="3"
+                                    maxlength="50"
+                                    required
+                                >
+                        
+                                <span class="input-hint">
+                                    يجب أن يكون بين 3 و 50 حرف
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Position Field -->
+                        <div class="form-group">
+                            <label for="position">
+                                <i data-lucide="briefcase"></i>
+                                المنصب
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <select id="position" name="position" class="form-control" required>
+                                    <option value="">-- اختر المنصب --</option>
+                                    <option value="مدير">مدير</option>
+                                    <option value="مطور">مطور</option>
+                                    <option value="محاسب">محاسب</option>
+                                    <option value="مندوب مبيعات">مندوب مبيعات</option>
+                                    <option value="مصمم">مصمم</option>
+                                    <option value="موظف إداري">موظف إداري</option>
+                                    <option value="أخرى">أخرى</option>
+                                </select>
+                                <span class="input-hint">اختر من القائمة أو أضف منصب جديد</span>
+                            </div>
+                        </div>
+
+                        <!-- Department Field -->
+                        <div class="form-group">
+                            <label for="department">
+                                <i data-lucide="building-2"></i>
+                                القسم
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <select id="department" name="department" class="form-control" required>
+                                    <option value="">-- اختر القسم --</option>
+                                    <option value="الموارد البشرية">الموارد البشرية</option>
+                                    <option value="تكنولوجيا المعلومات">تكنولوجيا المعلومات</option>
+                                    <option value="المبيعات">المبيعات</option>
+                                    <option value="المحاسبة">المحاسبة</option>
+                                    <option value="العمليات">العمليات</option>
+                                    <option value="الخدمة العملاء">الخدمة العملاء</option>
+                                    <option value="أخرى">أخرى</option>
+                                </select>
+                                <span class="input-hint">اختر قسم الموظف</span>
+                            </div>
+                        </div>
+<!-- Password Field -->
+<div class="form-group">
+    <label for="password">
+        <i data-lucide="lock"></i>
+        كلمة المرور
+        <span class="required">*</span>
+    </label>
+
+    <div class="input-wrapper">
+        <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            placeholder="أدخل كلمة مرور للموظف"
+            minlength="4"
+            required
+        >
+
+        <span class="input-hint">
+            سيستخدمها الموظف لتسجيل الدخول
+        </span>
+    </div>
+</div>
+                        <!-- Preview Section -->
+                        <div class="preview-section">
+                            <h4>معاينة بيانات الموظف</h4>
+                            <div class="preview-card">
+                                <div class="preview-item">
+                                    <span class="preview-label">الاسم:</span>
+                                    <span class="preview-value" id="preview-name">غير محدد</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">المنصب:</span>
+                                    <span class="preview-value" id="preview-position">غير محدد</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">القسم:</span>
+                                    <span class="preview-value" id="preview-department">غير محدد</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-modern btn-primary btn-large">
+                                <i data-lucide="check-circle"></i>
+                                إضافة الموظف
+                            </button>
+                            <button type="reset" class="btn-modern btn-secondary btn-large">
+                                <i data-lucide="x-circle"></i>
+                                مسح البيانات
+                            </button>
+                            <a href="employees.html" class="btn-modern btn-outline btn-large">
+                                <i data-lucide="arrow-left"></i>
+                                رجوع للموظفين
+                            </a>
+                        </div>
+
+                        <!-- Success Message -->
+                        <div id="success-message" class="alert alert-success" style="display: none;">
+                            <i data-lucide="check-circle"></i>
+                            <span>تم إضافة الموظف بنجاح!</span>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="error-message" class="alert alert-error" style="display: none;">
+                            <i data-lucide="alert-circle"></i>
+                            <span id="error-text"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card info-card animate-fade" style="animation-delay: 0.1s;">
+<div class="card-header info-header">
+                    <h4>
+                        <i data-lucide="info"></i>
+                        معلومات مهمة
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="info-list">
+                        <div class="info-item">
+                            <i data-lucide="check"></i>
+                            <span>جميع الحقول مطلوبة</span>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="check"></i>
+                            <span>يقوم المدير بتحديد رقم الموظف يدوياً</span>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="check"></i>
+                            <span>يمكنك تعديل البيانات لاحقاً</span>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="check"></i>
+                            <span>سيظهر الموظف في قائمة الموظفين فوراً</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+<script>
+    lucide.createIcons();
+
+    // Real-time preview
+    document.getElementById('name').addEventListener('input', (e) => {
+        document.getElementById('preview-name').textContent = e.target.value || 'غير محدد';
+    });
+
+    document.getElementById('position').addEventListener('change', (e) => {
+        document.getElementById('preview-position').textContent = e.target.value || 'غير محدد';
+    });
+
+    document.getElementById('department').addEventListener('change', (e) => {
+        document.getElementById('preview-department').textContent = e.target.value || 'غير محدد';
+    });
+
+    // Form validation and submission
+    document.getElementById('add-employee-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+
+        const employeeId = form.employeeId.value.trim();
+        const name = form.name.value.trim();
+        const position = form.position.value.trim();
+        const department = form.department.value.trim();
+        const password = form.password.value.trim();
+
+        // Validation
+        if (!employeeId) {
+            showError('يرجى إدخال رقم الموظف');
+            return;
+        }
+
+        if (name.length < 3) {
+            showError('الاسم يجب أن يكون 3 أحرف على الأقل');
+            return;
+        }
+
+        if (!position) {
+            showError('يرجى اختيار منصب');
+            return;
+        }
+
+        if (!department) {
+            showError('يرجى اختيار قسم');
+            return;
+        }
+
+        if (password.length < 4) {
+            showError('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+            return;
+        }
+
+handleAddEmployee(e);
+    });
+
+    function showError(message) {
+        const errorMsg = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+
+        errorText.textContent = message;
+        errorMsg.style.display = 'flex';
+
+        setTimeout(() => {
+            errorMsg.style.display = 'none';
+        }, 4000);
+    }
+</script>

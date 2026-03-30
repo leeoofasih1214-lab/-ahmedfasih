@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقارير والإحصائيات - نظام متابعة الإنذارات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <a href="index.html" class="sidebar-brand">نظام الإنذارات</a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i data-lucide="layout-dashboard"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="employees.html" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>الموظفين</span>
+            </a>
+            <a href="warnings.html" class="nav-item">
+                <i data-lucide="file-text"></i>
+                <span>سجل الإنذارات</span>
+            </a>
+            <a href="add-warning.html" class="nav-item">
+                <i data-lucide="plus-circle"></i>
+                <span>إضافة إنذار</span>
+            </a>
+            <a href="add-employee.html" class="nav-item">
+                <i data-lucide="user-plus"></i>
+                <span>إضافة موظف</span>
+            </a>
+            <a href="reports.html" class="nav-item active">
+                <i data-lucide="bar-chart-2"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="login.html" class="nav-item" style="color: var(--red); margin-top: auto;">
+                <i data-lucide="log-out"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar animate-fade">
+            <div class="page-title">
+                <h1>التقارير والإحصائيات</h1>
+                <p>تحليل شامل للإنذارات والموظفين</p>
+            </div>
+            <div class="top-actions">
+
+                <button class="btn-modern btn-primary" onclick="window.location.href='add-warning.html'">
+                    <i data-lucide="plus"></i>
+                    إضافة إنذار جديد
+                </button>
+                
+                <button class="btn-modern btn-secondary" onclick="window.location.href='add-employee.html'">
+                    <i data-lucide="user-plus"></i>
+                    إضافة موظف
+                </button>
+                
+                <!-- زر الوضع الليلي -->
+                <button class="btn-modern btn-secondary" onclick="toggleDarkMode()">
+                    🌙 الوضع الليلي
+                </button>
+                
+                </div>
+        </header>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon employees-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <div>
+                    <p class="stat-label">إجمالي الموظفين</p>
+                    <h3 id="stat-total-employees">0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon warnings-icon">
+                    <i data-lucide="alert-circle"></i>
+                </div>
+                <div>
+                    <p class="stat-label">إجمالي الإنذارات</p>
+                    <h3 id="stat-total-warnings">0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon avg-icon">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <div>
+                    <p class="stat-label">متوسط الإنذارات</p>
+                    <h3 id="stat-avg-warnings">0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon month-icon">
+                    <i data-lucide="calendar"></i>
+                </div>
+                <div>
+                    <p class="stat-label">إنذارات هذا الشهر</p>
+                    <h3 id="stat-month-warnings">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Container -->
+        <div class="charts-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>الإنذارات حسب القسم</h3>
+                </div>
+                <div class="card-body" style="position: relative; height: 300px;">
+                    <canvas id="departmentChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>توزيع الإنذارات الشهري</h3>
+                </div>
+                <div class="card-body" style="position: relative; height: 300px;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Most Warned Employees -->
+        <div class="card">
+            <div class="card-header">
+                <h3>أكثر الموظفين إنذاراً</h3>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم الموظف</th>
+                            <th>القسم</th>
+                            <th>عدد الإنذارات</th>
+                            <th>آخر إنذار</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="most-warned-body">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">
+                                جاري تحميل البيانات...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Department Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h3>إحصائيات الأقسام</h3>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>القسم</th>
+                            <th>عدد الموظفين</th>
+                            <th>عدد الإنذارات</th>
+                            <th>النسبة المئوية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="department-stats-body">
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">
+                                لا توجد بيانات
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+        renderReports().catch(console.error);
+    </script>
+</body>
+</html>

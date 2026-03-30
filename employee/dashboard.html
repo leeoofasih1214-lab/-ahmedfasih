@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الموظف - Staff Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="employee-style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="header">
+<div>لوحة الموظف</div>
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+</div>
+<div class="container">
+<div class="card profile-card">
+<img id="profile-img">
+<h2 id="emp-name">جاري التحميل...</h2>
+<p id="emp-dept">...</p>
+</div>
+<div class="card">
+<div class="icon">🆔</div>
+<div class="title">رقم الموظف</div>
+<div class="value" id="emp-id">-</div>
+</div>
+<div class="card">
+<div class="icon">⚠️</div>
+<div class="title">عدد الإنذارات</div>
+<div class="value" id="emp-warnings">0</div>
+</div>
+<div class="card">
+<div class="icon">📊</div>
+<div class="title">الحالة</div>
+<div class="value" id="employee-status">جاري التحميل...</div>
+</div>
+<div class="card">
+<div class="title">الإنذارات</div>
+<table class="warnings-table">
+<thead><tr><th>#</th><th>السبب</th><th>التاريخ</th></tr></thead>
+<tbody id="warnings-list"><tr><td colspan="3">جاري التحميل...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<button class="logout" onclick="logout()">تسجيل الخروج</button>
+<script src="../employee-script.js"></script>
+</body>
+</html>

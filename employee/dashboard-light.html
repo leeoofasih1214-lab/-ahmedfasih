@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الموظف - Staff Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="employee-style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<!-- Loading Skeleton -->
+<div id="skeleton" style="display:block;">
+<div class="header">
+<div class="skeleton-line"></div>
+</div>
+<div class="container">
+<div class="card profile-card">
+<div class="skeleton-avatar"></div>
+<div class="skeleton-line short"></div>
+<div class="skeleton-line"></div>
+</div>
+<div class="skeleton-card"><div class="skeleton-line short"></div></div>
+<div class="skeleton-card"><div class="skeleton-line short"></div></div>
+<div class="skeleton-card"><div class="skeleton-line short"></div></div>
+</div>
+</div>
+
+<!-- Real Content (hidden initially) -->
+<div id="content" style="display:none;">
+<div id="notification" class="notification" style="display:none;"></div>
+<div class="header">
+<div><i data-lucide="layout-dashboard"></i> لوحة الموظف</div>
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+</div>
+<div class="container">
+<!-- Profile Card -->
+<div class="card profile-card">
+<img id="profile-img" src="" alt="Profile">
+<h2 id="emp-name">-</h2>
+<p id="emp-dept">-</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="card">
+<div class="icon">🆔</div>
+<div class="title">رقم الموظف</div>
+<div class="value" id="emp-id">-</div>
+</div>
+
+<div class="card">
+<div class="icon">⚠️</div>
+<div class="title">عدد الإنذارات</div>
+<div class="value" id="emp-warnings">0</div>
+</div>
+
+<div class="card">
+<div class="icon">📊</div>
+<div class="title">حالة الموظف</div>
+<div class="value" id="employee-status">جاري التحميل...</div>
+</div>
+
+<!-- Chart (lazy) -->
+<div class="card chart-container" id="chart-section">
+<div class="title">إحصائيات الإنذارات</div>
+<canvas id="warningsChart" width="400" height="200"></canvas>
+</div>
+
+<!-- Warnings Table -->
+<div class="card warnings-card">
+<div class="title">
+<i data-lucide="alert-triangle"></i> سجل الإنذارات
+</div>
+<table class="warnings-table">
+<thead>
+<tr><th>#</th><th>السبب</th><th>التاريخ</th></tr>
+</thead>
+<tbody id="warnings-list">
+<tr><td colspan="3" class="loading">جاري تحميل الإنذارات...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<button class="logout" onclick="logout()">
+<i data-lucide="log-out"></i> تسجيل الخروج
+</button>
+
+<script>
+// Minimal API helpers (NO full script.js)
+const BASE_URL = 'http://localhost:5000/api';
+let authToken = localStorage.getItem('authToken');
+
+async function apiRequest(endpoint, options = {}) {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
+    ...options
+  };
+  if (authToken) config.headers.Authorization = `Bearer ${authToken}`;
+
+  try {
+    const response = await fetch(BASE_URL + endpoint, config);
+    if (!response.ok) {
+      if (response.status === 401) {
+        logout();
+        throw new Error('انتهت صلاحية الجلسة');
+      }
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'خطأ في الخادم');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+}
+
+async function getEmployees() {
+  return await apiRequest('/employees');
+}
+
+async function getWarnings() {
+  return await apiRequest('/warnings');
+}
+
+// Load dashboard
+async function loadDashboard() {
+  const skeleton = document.getElementById('skeleton');
+  const content = document.getElementById('content');
+  
+  try {
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) throw new Error('غير مسجل الدخول');
+
+    const [employees, warnings] = await Promise.all([getEmployees(), getWarnings()]);
+    
+    const employee = employees.find(e => String(e.displayId || e.id) === String(currentUser));
+    if (!employee) throw new Error('بيانات الموظف غير موجودة');
+
+    // Hide skeleton, show content
+    skeleton.style.display = 'none';
+    content.style.display = 'block';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Update profile
+    document.getElementById('profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.name)}&background=2563eb&color=fff&size=80`;
+    document.getElementById('emp-id').textContent = employee.displayId || employee.id;
+    document.getElementById('emp-name').textContent = employee.name;
+    document.getElementById('emp-dept').textContent = employee.department || 'غير محدد';
+
+    // Employee warnings
+    const empWarnings = warnings.filter(w => String(w.employeeId) === String(employee.id));
+    document.getElementById('emp-warnings').textContent = empWarnings.length;
+
+    // Status
+    const statusEl = document.getElementById('employee-status');
+    let status = { text: 'جيد', class: 'status-good' };
+    if (empWarnings.length >= 3) { status = { text: 'خطر', class: 'status-danger' }; }
+    else if (empWarnings.length >= 1) { status = { text: 'تحذير', class: 'status-warning' }; }
+    statusEl.textContent = status.text;
+    statusEl.className = `value ${status.class}`;
+
+    // Table
+    const tableBody = document.getElementById('warnings-list');
+    if (empWarnings.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="3">لا توجد إنذارات ✓</td></tr>';
+    } else {
+      tableBody.innerHTML = empWarnings.slice(0, 10).map((w, i) => 
+        `<tr><td>${i+1}</td><td>${w.reason}</td><td>${w.date}</td></tr>`
+      ).join('');
+    }
+
+    // Lazy chart only if warnings
+    if (empWarnings.length > 0) {
+      const dates = [...new Set(empWarnings.map(w => w.date))];
+      new Chart(document.getElementById('warningsChart'), {
+        type: 'bar',
+        data: {
+          labels: dates,
+          datasets: [{ label: 'الإنذارات', data: dates.map(d => empWarnings.filter(w => w.date === d).length), 
+                      backgroundColor: '#2563eb' }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+    }
+
+    // Notification
+    if (empWarnings.length > 0) {
+      const notif = document.getElementById('notification');
+      notif.innerHTML = `<i data-lucide="alert-circle"></i> لديك ${empWarnings.length} إنذار`;
+      notif.style.display = 'flex';
+      setTimeout(() => notif.style.display = 'none', 5000);
+    }
+
+  } catch (error) {
+    skeleton.style.display = 'none';
+    content.style.display = 'block';
+    document.getElementById('emp-name').textContent = 'خطأ: ' + error.message;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+function logout() {
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('authToken');
+  window.location.href = '../login.html';
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme', document.body.classList.contains('dark'));
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', async () => {
+  const theme = localStorage.getItem('theme');
+  if (theme === 'true' || theme === 'dark') document.body.classList.add('dark');
+  await loadDashboard();
+});
+</script>
+<style>
+/* Quick skeleton CSS */
+.skeleton-line { height: 20px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 4px; }
+.skeleton-line.short { width: 60%; }
+.skeleton-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; margin: 0 auto; }
+.skeleton-card { padding: 25px; }
+@keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.status-good { color: #10b981; } .status-warning { color: #f59e0b; } .status-danger { color: #ef4444; }
+.loading { text-align: center; color: #94a3b8; font-style: italic; }
+</style>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - نظام متابعة الإنذارات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <a href="index.html" class="sidebar-brand">نظام الإنذارات</a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item active">
+                <i data-lucide="layout-dashboard"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="employees.html" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>الموظفين</span>
+            </a>
+            <a href="warnings.html" class="nav-item">
+                <i data-lucide="file-text"></i>
+                <span>سجل الإنذارات</span>
+            </a>
+            <a href="add-warning.html" class="nav-item">
+                <i data-lucide="plus-circle"></i>
+                <span>إضافة إنذار</span>
+            </a>
+            <a href="add-employee.html" class="nav-item">
+                <i data-lucide="user-plus"></i>
+                <span>إضافة موظف</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="login.html" class="nav-item" style="color: var(--red); margin-top: auto;">
+                <i data-lucide="log-out"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+<div class="main-wrapper">
+    <header class="top-bar animate-fade">
+        <div class="page-title">
+            <button id="menu-btn">☰</button>
+            <h1>لوحة التحكم</h1>
+            <p>مرحباً! إليك ملخص نظام الإنذارات</p>
+        </div>
+
+        <div class="top-actions">
+
+            <button class="btn-modern btn-primary" onclick="window.location.href='add-warning.html'">
+                <i data-lucide="plus"></i>
+                إضافة إنذار جديد
+            </button>
+
+            <button class="btn-modern btn-secondary" onclick="window.location.href='add-employee.html'">
+                <i data-lucide="user-plus"></i>
+                إضافة موظف
+            </button>
+
+            <!-- زر الوضع الليلي -->
+            <button class="btn-modern btn-secondary" onclick="toggleDarkMode()">
+                🌙 الوضع الليلي
+            </button>
+
+        </div>
+    </header>
+
+        <!-- Main Content -->
+        <div class="dashboard-container">
+            <!-- Statistics Cards Section -->
+            <div class="stats-section animate-fade">
+                <h2 class="section-title">
+                    <i data-lucide="bar-chart-2"></i>
+                    الإحصائيات الرئيسية
+                </h2>
+                <div class="stats-grid">
+                    <!-- Total Employees -->
+                    <div class="stat-card animate-fade">
+                        <div class="stat-header">
+                            <div class="stat-icon employees-icon">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div class="stat-trend up">
+                                <i data-lucide="arrow-up"></i>
+                                <span>أخير 30 يوم</span>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value" id="total-employees">0</h3>
+                            <p class="stat-label">إجمالي الموظفين</p>
+                        </div>
+                        <div class="stat-footer">
+                            <a href="employees.html" class="stat-link">عرض الموظفين</a>
+                        </div>
+                    </div>
+
+                    <!-- Total Warnings -->
+                    <div class="stat-card animate-fade" style="animation-delay: 0.05s;">
+                        <div class="stat-header">
+                            <div class="stat-icon warnings-icon">
+                                <i data-lucide="alert-triangle"></i>
+                            </div>
+                            <div class="stat-trend down">
+                                <i data-lucide="arrow-down"></i>
+                                <span>أخير 30 يوم</span>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value" id="total-warnings">0</h3>
+                            <p class="stat-label">إجمالي الإنذارات</p>
+                        </div>
+                        <div class="stat-footer">
+                            <a href="warnings.html" class="stat-link">عرض الإنذارات</a>
+                        </div>
+                    </div>
+
+                    <!-- Warned Employees -->
+                    <div class="stat-card animate-fade" style="animation-delay: 0.1s;">
+                        <div class="stat-header">
+                            <div class="stat-icon danger-icon">
+<i data-lucide="alert-triangle"></i>
+                            </div>
+                            <div class="stat-trend up">
+                                <i data-lucide="arrow-up"></i>
+                                <span>أخير 30 يوم</span>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value" id="warned-count">0</h3>
+                            <p class="stat-label">موظفين لديهم إنذارات</p>
+                        </div>
+                        <div class="stat-footer">
+                            <a href="reports.html" class="stat-link">عرض التقارير</a>
+                        </div>
+                    </div>
+
+                    <!-- Average Warnings -->
+                    <div class="stat-card animate-fade" style="animation-delay: 0.15s;">
+                        <div class="stat-header">
+                            <div class="stat-icon info-icon">
+                                <i data-lucide="activity"></i>
+                            </div>
+                            <div class="stat-trend stable">
+                                <i data-lucide="minus"></i>
+                                <span>متوسط</span>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value" id="avg-warnings">0</h3>
+                            <p class="stat-label">متوسط الإنذارات للموظف</p>
+                        </div>
+                        <div class="stat-footer">
+                            <a href="reports.html" class="stat-link">التحليل التفصيلي</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Row -->
+            <div class="quick-stats animate-fade" style="animation-delay: 0.2s;">
+                <div class="quick-stat">
+                    <h4>الإنذارات هذا الشهر</h4>
+                    <div class="quick-value" id="month-warnings">0</div>
+                </div>
+                <div class="quick-stat">
+                    <h4>موظفين جدد</h4>
+                    <div class="quick-value" id="new-employees">0</div>
+                </div>
+                <div class="quick-stat">
+                    <h4>الأكثر إنذاراً</h4>
+                    <div class="quick-value" id="top-warned">-</div>
+                </div>
+                <div class="quick-stat">
+                    <h4>القسم الأكثر إنذاراً</h4>
+                    <div class="quick-value" id="top-department">-</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section animate-fade" style="animation-delay: 0.25s;">
+                <h2 class="section-title">
+                    <i data-lucide="line-chart"></i>
+                    التحليلات والرسوم البيانية
+                </h2>
+                <div class="charts-grid">
+                    <!-- Warnings Trend Chart -->
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h4>اتجاه الإنذارات (آخر 12 شهر)</h4>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Department Distribution Chart -->
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h4>توزيع الإنذارات حسب القسم</h4>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="departmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Warnings Section -->
+            <div class="recent-section animate-fade" style="animation-delay: 0.3s;">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="clock"></i>
+                        آخر الإنذارات المسجلة
+                    </h2>
+                    <a href="warnings.html" class="view-all-link">عرض الجميع</a>
+                </div>
+
+                <div class="warnings-list" id="recent-warnings">
+                    <div class="empty-state">
+                        <i data-lucide="inbox"></i>
+                        <p>لا توجد إنذارات حتى الآن</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Cards Section -->
+            <div class="action-cards-section animate-fade" style="animation-delay: 0.35s;">
+                <h2 class="section-title">
+                    <i data-lucide="zap"></i>
+                    الإجراءات السريعة
+                </h2>
+                <div class="action-cards-grid">
+                    <div class="action-card blue">
+                        <div class="action-icon">
+                            <i data-lucide="plus-circle"></i>
+                        </div>
+                        <h3>إضافة إنذار جديد</h3>
+                        <p>سجل إنذار جديد لموظف</p>
+                        <a href="add-warning.html" class="action-card-link">انتقل هنا</a>
+                    </div>
+
+                    <div class="action-card green">
+                        <div class="action-icon">
+                            <i data-lucide="user-plus"></i>
+                        </div>
+                        <h3>إضافة موظف جديد</h3>
+                        <p>قم بتسجيل موظف جديد في النظام</p>
+                        <a href="add-employee.html" class="action-card-link">انتقل هنا</a>
+                    </div>
+
+                    <div class="action-card orange">
+                        <div class="action-icon">
+                            <i data-lucide="bar-chart-2"></i>
+                        </div>
+                        <h3>عرض التقارير</h3>
+                        <p>تحليلات وإحصائيات مفصلة</p>
+                        <a href="reports.html" class="action-card-link">انتقل هنا</a>
+                    </div>
+
+                    <div class="action-card purple">
+                        <div class="action-icon">
+                            <i data-lucide="settings"></i>
+                        </div>
+                        <h3>الإعدادات</h3>
+                        <p>إدارة إعدادات النظام والحساب</p>
+                        <a href="settings.html" class="action-card-link">انتقل هنا</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+
+        async function renderEnhancedDashboard() {
+            try {
+                const employees = await getEmployees();
+                const warnings = await getWarnings();
+
+                if (!Array.isArray(employees)) employees = [];
+                if (!Array.isArray(warnings)) warnings = []; 
+
+                // Update stats
+                document.getElementById('total-employees').textContent = employees.length;
+                document.getElementById('total-warnings').textContent = warnings.length;
+            
+            const warnedEmployees = new Set(warnings.map(w => w.employeeId)).size;
+            document.getElementById('warned-count').textContent = warnedEmployees;
+            
+            const avgWarnings = employees.length > 0 ? (warnings.length / employees.length).toFixed(2) : 0;
+            document.getElementById('avg-warnings').textContent = avgWarnings;
+
+            // Month warnings
+            const now = new Date();
+            const monthAgo = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthWarnings = warnings.filter(w => new Date(w.date) >= monthAgo).length;
+            document.getElementById('month-warnings').textContent = monthWarnings;
+
+            // New employees (last 30 days)
+            const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const newEmp = employees.filter(e => new Date(e.createdAt || 0) >= thirtyDaysAgo).length;
+            document.getElementById('new-employees').textContent = newEmp;
+
+            // Top warned employee
+            const warnedCounts = {};
+            warnings.forEach(w => {
+                warnedCounts[w.employeeId] = (warnedCounts[w.employeeId] || 0) + 1;
+            });
+            const topWarnedId = Object.keys(warnedCounts).reduce((a, b) => 
+                (warnedCounts[a] || 0) > (warnedCounts[b] || 0) ? a : b, null);
+            const topWarnedEmp = employees.find(e => e.id === topWarnedId);
+            document.getElementById('top-warned').textContent = topWarnedEmp ? topWarnedEmp.name : '-';
+
+            // Top department
+            const deptCounts = {};
+            warnings.forEach(w => {
+                const emp = employees.find(e => e.id === w.employeeId);
+                if (emp) deptCounts[emp.department] = (deptCounts[emp.department] || 0) + 1;
+            });
+            const topDept = Object.keys(deptCounts).reduce((a, b) => 
+                (deptCounts[a] || 0) > (deptCounts[b] || 0) ? a : b, null);
+            document.getElementById('top-department').textContent = topDept || '-';
+
+            // Recent warnings list
+            const recentWarnings = warnings.slice().reverse().slice(0, 5);
+            const warningsList = document.getElementById('recent-warnings');
+            
+            if (recentWarnings.length === 0) {
+                warningsList.innerHTML = '<div class="empty-state"><i data-lucide="inbox"></i><p>لا توجد إنذارات حتى الآن</p></div>';
+                lucide.createIcons();
+                return;
+            }
+
+            warningsList.innerHTML = recentWarnings.map(w => {
+                const emp = employees.find(e => e.id === w.employeeId);
+                const empName = emp ? emp.name : 'غير معروف';
+                return `
+                    <div class="warning-item">
+                        <div class="warning-header">
+                            <div class="warning-info">
+                                <h4>${empName}</h4>
+                                <p class="warning-date">
+                                    <i data-lucide="calendar"></i>
+                                    ${new Date(w.date).toLocaleDateString('ar-EG')}
+                                </p>
+                            </div>
+                            <span class="severity-badge ${w.severity?.toLowerCase() || 'منخفضة'}-border">
+                                ${w.severity || 'منخفضة'}
+                            </span>
+                        </div>
+                        <p class="warning-reason">${w.reason}</p>
+                        <div class="warning-footer">
+                            <a href="warnings.html" class="warning-view-link">عرض التفاصيل</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+
+            // Charts
+            renderDashboardCharts(warnings, employees);
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                // Set fallback values
+                document.querySelectorAll('[id^="total-"], [id^="avg-"], [id^="month-"], [id^="new-"], [id^="warned-count"], [id^="top-"]').forEach(el => {
+                    el.textContent = el.id.includes('top-') ? '-' : '0';
+                });
+            }
+        }
+
+        function renderDashboardCharts(warnings, employees) {
+            // Trend Chart
+            const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const monthCounts = new Array(12).fill(0);
+            const now = new Date();
+            
+            warnings.forEach(w => {
+                const date = new Date(w.date);
+                if (date.getFullYear() === now.getFullYear()) {
+                    monthCounts[date.getMonth()]++;
+                }
+            });
+
+            const trendCtx = document.getElementById('trendChart')?.getContext('2d');
+            if (trendCtx) {
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'الإنذارات',
+                            data: monthCounts,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: { font: { family: 'Tajawal' } }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { font: { family: 'Tajawal' } }
+                            },
+                            x: {
+                                ticks: { font: { family: 'Tajawal' } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Department Chart
+            const deptCounts = {};
+            const deptColors = {};
+            const colorPalette = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+            let colorIndex = 0;
+
+            warnings.forEach(w => {
+                const emp = employees.find(e => e.id === w.employeeId);
+                if (emp) {
+                    deptCounts[emp.department] = (deptCounts[emp.department] || 0) + 1;
+                    if (!deptColors[emp.department]) {
+                        deptColors[emp.department] = colorPalette[colorIndex++ % colorPalette.length];
+                    }
+                }
+            });
+
+            const departmentCtx = document.getElementById('departmentChart')?.getContext('2d');
+            if (departmentCtx) {
+                new Chart(departmentCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(deptCounts),
+                        datasets: [{
+                            data: Object.values(deptCounts),
+                            backgroundColor: Object.keys(deptCounts).map(d => deptColors[d]),
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { font: { family: 'Tajawal' } }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize
+        renderEnhancedDashboard()
+            .catch(error => {
+                console.error('Dashboard load error:', error);
+                // Fallback UI
+                document.querySelectorAll('[id*="total-"], [id*="warnings"], [id*="employees"]').forEach(el => {
+                    el.textContent = '0';
+                });
+            });
+    </script>
+</body>
+</html>

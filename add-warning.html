@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة إنذار جديد - نظام متابعة الإنذارات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <a href="index.html" class="sidebar-brand">نظام الإنذارات</a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <i data-lucide="layout-dashboard"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="employees.html" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>الموظفين</span>
+            </a>
+            <a href="warnings.html" class="nav-item">
+                <i data-lucide="file-text"></i>
+                <span>سجل الإنذارات</span>
+            </a>
+            <a href="add-warning.html" class="nav-item active">
+                <i data-lucide="plus-circle"></i>
+                <span>إضافة إنذار</span>
+            </a>
+            <a href="add-employee.html" class="nav-item">
+                <i data-lucide="user-plus"></i>
+                <span>إضافة موظف</span>
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="login.html" class="nav-item" style="color: var(--red); margin-top: auto;">
+                <i data-lucide="log-out"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <header class="top-bar animate-fade">
+            <div class="page-title">
+                <h1>إضافة إنذار جديد</h1>
+                <p>قم بتسجيل إنذار جديد للموظف المخالف</p>
+            </div>
+            <div class="top-actions">
+
+                <button class="btn-modern btn-primary" onclick="window.location.href='add-warning.html'">
+                    <i data-lucide="plus"></i>
+                    إضافة إنذار جديد
+                </button>
+                
+                <button class="btn-modern btn-secondary" onclick="window.location.href='add-employee.html'">
+                    <i data-lucide="user-plus"></i>
+                    إضافة موظف
+                </button>
+                
+                <!-- زر الوضع الليلي -->
+                <button class="btn-modern btn-secondary" onclick="toggleDarkMode()">
+                    🌙 الوضع الليلي
+                </button>
+                
+                </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="form-container">
+            <!-- Form Card -->
+            <div class="card form-card animate-fade">
+                <div class="card-header">
+                    <h3>
+                        <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
+                        نموذج إضافة إنذار جديد
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form id="add-warning-form" class="enhanced-form">
+                        <!-- Employee Selection -->
+                        <div class="form-group">
+                            <label for="employeeId">
+                                <i data-lucide="users"></i>
+                                اختر الموظف
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <select id="employeeId" name="employeeId" class="form-control" required>
+                                    <option value="">-- اختر الموظف --</option>
+                                </select>
+                                <span class="input-hint">اختر الموظف المراد إضافة إنذار له</span>
+                            </div>
+                        </div>
+
+                        <!-- Employee Info Display -->
+                        <div class="employee-info-box" id="employee-info" style="display: none;">
+                            <div class="info-header">
+                                <i data-lucide="user"></i>
+                                <h4>معلومات الموظف المختار</h4>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-row">
+                                    <span class="info-label">المنصب:</span>
+                                    <span class="info-value" id="emp-position">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">القسم:</span>
+                                    <span class="info-value" id="emp-department">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">عدد الإنذارات:</span>
+                                    <span class="info-value" id="emp-warnings-count">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reason Field -->
+                        <div class="form-group">
+                            <label for="reason">
+                                <i data-lucide="edit-3"></i>
+                                سبب الإنذار
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <textarea 
+                                    id="reason" 
+                                    name="reason" 
+                                    class="form-control" 
+                                    placeholder="وصف مفصل لسبب الإنذار..."
+                                    minlength="10"
+                                    maxlength="500"
+                                    rows="4"
+                                    required
+                                ></textarea>
+                                <div class="char-counter">
+                                    <span id="char-count">0</span> / 500
+                                </div>
+                                <span class="input-hint">أدخل تفاصيل دقيقة عن سبب الإنذار (10-500 حرف)</span>
+                            </div>
+                        </div>
+
+                        <!-- Date Field -->
+                        <div class="form-group">
+                            <label for="date">
+                                <i data-lucide="calendar"></i>
+                                تاريخ الإنذار
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input 
+                                    type="date" 
+                                    id="date" 
+                                    name="date" 
+                                    class="form-control"
+                                    required
+                                >
+                                <span class="input-hint">اختر تاريخ حدوث المخالفة</span>
+                            </div>
+                        </div>
+
+                        <!-- Warning Level -->
+                        <div class="form-group">
+                            <label for="severity">
+                                <i data-lucide="alert-circle"></i>
+                                مستوى الخطورة
+                                <span class="required">*</span>
+                            </label>
+                            <div class="severity-options">
+                                <label class="severity-option">
+                                    <input type="radio" name="severity" value="منخفضة" checked>
+                                    <span class="severity-badge low">منخفضة</span>
+                                </label>
+                                <label class="severity-option">
+                                    <input type="radio" name="severity" value="متوسطة">
+                                    <span class="severity-badge medium">متوسطة</span>
+                                </label>
+                                <label class="severity-option">
+                                    <input type="radio" name="severity" value="عالية">
+                                    <span class="severity-badge high">عالية</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div class="preview-section">
+                            <h4>معاينة الإنذار</h4>
+                            <div class="preview-card warning-preview">
+                                <div class="preview-item">
+                                    <span class="preview-label">الموظف:</span>
+                                    <span class="preview-value" id="preview-employee">غير محدد</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">التاريخ:</span>
+                                    <span class="preview-value" id="preview-date">غير محدد</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">الخطورة:</span>
+                                    <span class="preview-value" id="preview-severity">منخفضة</span>
+                                </div>
+                                <div class="preview-item full-width">
+                                    <span class="preview-label">السبب:</span>
+                                    <p class="preview-reason" id="preview-reason">غير محدد</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-modern btn-primary btn-large">
+                                <i data-lucide="check-circle"></i>
+                                تسجيل الإنذار
+                            </button>
+                            <button type="reset" class="btn-modern btn-secondary btn-large">
+                                <i data-lucide="x-circle"></i>
+                                مسح البيانات
+                            </button>
+                            <a href="warnings.html" class="btn-modern btn-outline btn-large">
+                                <i data-lucide="arrow-left"></i>
+                                رجوع للإنذارات
+                            </a>
+                        </div>
+
+                        <!-- Success Message -->
+                        <div id="success-message" class="alert alert-success" style="display: none;">
+                            <i data-lucide="check-circle"></i>
+                            <span>تم تسجيل الإنذار بنجاح!</span>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="error-message" class="alert alert-error" style="display: none;">
+                            <i data-lucide="alert-circle"></i>
+                            <span id="error-text"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="card tips-card animate-fade" style="animation-delay: 0.1s;">
+                <div class="card-header" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));">
+                    <h4>
+                        <i data-lucide="lightbulb"></i>
+                        نصائح مهمة
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <i data-lucide="check"></i>
+                            <div>
+                                <strong>تفاصيل دقيقة:</strong>
+                                <p>وثّق سبب الإنذار بشكل مفصل وواضح</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i data-lucide="check"></i>
+                            <div>
+                                <strong>التاريخ الصحيح:</strong>
+                                <p>تأكد من إدخال تاريخ المخالفة الفعلي</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i data-lucide="check"></i>
+                            <div>
+                                <strong>مستوى الخطورة:</strong>
+                                <p>اختر المستوى المناسب حسب قساوة المخالفة</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i data-lucide="check"></i>
+                            <div>
+                                <strong>التحفظ القانوني:</strong>
+                                <p>احتفظ بنسخة من الإنذارات للمراجعة اللاحقة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Character counter
+        document.getElementById('reason').addEventListener('input', (e) => {
+            const count = e.target.value.length;
+            document.getElementById('char-count').textContent = count;
+            document.getElementById('preview-reason').textContent = e.target.value || 'غير محدد';
+        });
+
+        // Employee selection
+        document.getElementById('employeeId').addEventListener('change', (e) => {
+            const employeeId = e.target.value;
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            document.getElementById('preview-employee').textContent = selectedOption.text || 'غير محدد';
+
+            if (employeeId) {
+                const employees = getEmployees();
+                const employee = employees.find(emp => emp.id === employeeId);
+                if (employee) {
+                    document.getElementById('employee-info').style.display = 'block';
+                    document.getElementById('emp-position').textContent = employee.position;
+                    document.getElementById('emp-department').textContent = employee.department;
+                    
+                    const warnings = getWarnings();
+                    const empWarnings = warnings.filter(w => w.employeeId === employeeId).length;
+                    document.getElementById('emp-warnings-count').textContent = empWarnings;
+                }
+            } else {
+                document.getElementById('employee-info').style.display = 'none';
+            }
+        });
+
+        // Date field
+        document.getElementById('date').addEventListener('change', (e) => {
+            document.getElementById('preview-date').textContent = e.target.value || 'غير محدد';
+        });
+
+        // Severity
+        document.querySelectorAll('input[name="severity"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('preview-severity').textContent = e.target.value;
+            });
+        });
+
+        // Form submission
+        document.getElementById('add-warning-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const employeeId = form.employeeId.value;
+            const reason = form.reason.value.trim();
+            const date = form.date.value;
+
+            if (!employeeId) {
+                showError('يرجى اختيار موظف');
+                return;
+            }
+
+            if (reason.length < 10) {
+                showError('سبب الإنذار يجب أن يكون 10 أحرف على الأقل');
+                return;
+            }
+
+            if (!date) {
+                showError('يرجى اختيار تاريخ');
+                return;
+            }
+
+            handleAddWarning(e);
+
+            const successMsg = document.getElementById('success-message');
+            successMsg.style.display = 'flex';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        });
+
+        function showError(message) {
+            const errorMsg = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            errorText.textContent = message;
+            errorMsg.style.display = 'flex';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 4000);
+        }
+
+        // Initialize date to today
+        document.getElementById('date').valueAsDate = new Date();
+    </script>
+</body>
+</html>
